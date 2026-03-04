@@ -1,0 +1,15 @@
+{
+  "name": "socialzip-manus-webhook",
+  "version": "1.0.0",
+  "description": "Webhook server to receive Manus audit results and trigger GHL personalized email sequence",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "test": "node test-webhook.js"
+  },
+  "dependencies": {},
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
