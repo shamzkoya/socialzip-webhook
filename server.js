@@ -465,4 +465,12 @@ server.listen(CONFIG.PORT, () => {
 ║   GET  /                        → Health check       ║
 ╚══════════════════════════════════════════════════════╝
   `);
+
+  // Warn when default (hardcoded) credentials are still in use
+  if (!process.env.GHL_API_KEY) {
+    console.warn('⚠️  WARNING: GHL_API_KEY not set via environment — using hardcoded default. Set GHL_API_KEY before deploying to production.');
+  }
+  if (!process.env.WEBHOOK_SECRET) {
+    console.warn('⚠️  WARNING: WEBHOOK_SECRET not set via environment — using default "socialzip-manus-2024". Set WEBHOOK_SECRET before deploying to production.');
+  }
 });
