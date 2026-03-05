@@ -35,6 +35,10 @@ const CONFIG = {
     DAY_14: '1a8777e5-063e-40b6-8a64-ac0896cad10d',  // Day 14 - Final Touch Email
   },
 
+  // GHL Pipeline - Leads pipeline stage to move to after audit completes
+  PIPELINE_ID: 'BMNfFvbq3z2DtmhOJcjK',              // "Leads" pipeline
+  AUDIT_SENT_STAGE_ID: 'fe0adfe1-a007-4b70-9eea-6ec717cec97d', // "Audit Sent" stage
+
   // GHL Custom Field IDs
   CUSTOM_FIELDS: {
     SEO_SCORE:           'rFvHhndhXRHaBSV0BIM8',
@@ -164,6 +168,31 @@ async function removeTag(contactId, tag) {
     return await ghlRequest('DELETE', `/contacts/${contactId}/tags`, { tags: [tag] });
   } catch (e) {
     console.log(`  Note: Could not remove tag "${tag}" - may not exist`);
+  }
+}
+
+// Move opportunity to "Audit Sent" stage in Leads pipeline
+async function moveOpportunityToAuditSent(contactId) {
+  try {
+    // Search for the contact's opportunity in the Leads pipeline
+    const result = await ghlRequest('GET',
+      `/opportunities/search?location_id=${CONFIG.GHL_LOCATION_ID}&contact_id=${contactId}`
+    );
+    const opportunities = result.opportunities || [];
+    // Find the opportunity in the Leads pipeline
+    const opp = opportunities.find(o => o.pipelineId === CONFIG.PIPELINE_ID);
+    if (!opp) {
+      console.log('  ⚠️  No opportunity found in Leads pipeline for this contact');
+      return;
+    }
+    // Move to Audit Sent
+    await ghlRequest('PUT', `/opportunities/${opp.id}`, {
+      pipelineId: CONFIG.PIPELINE_ID,
+      pipelineStageId: CONFIG.AUDIT_SENT_STAGE_ID,
+    });
+    console.log(`  ✅ Opportunity moved to "Audit Sent" (was: ${opp.pipelineStage?.name || 'unknown'})`);
+  } catch (e) {
+    console.log('  ⚠️  Could not move opportunity stage:', e.message);
   }
 }
 
@@ -340,7 +369,11 @@ async function handleAuditWebhook(rawPayload) {
   // await removeFromWorkflow(contactId, CONFIG.WORKFLOWS.DAY_7);
   // await removeFromWorkflow(contactId, CONFIG.WORKFLOWS.DAY_14);
 
-  // 6. Enroll in Day 3 personalized workflow
+  // 6. Move opportunity to "Audit Sent" in the Leads pipeline
+  console.log('  Moving opportunity to "Audit Sent" stage...');
+  await moveOpportunityToAuditSent(contactId);
+
+  // 7. Enroll in Day 3 personalized workflow
   // The Day 3 workflow chains automatically to Day 7 → Day 14
   console.log('  Enrolling in Day 3 personalized sequence...');
   try {
