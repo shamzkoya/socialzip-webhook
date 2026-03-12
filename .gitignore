@@ -1,0 +1,11 @@
+# Environment files with secrets
+.env
+woocommerce/.env
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Node
+node_modules/
