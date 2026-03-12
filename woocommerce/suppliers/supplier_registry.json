@@ -121,10 +121,10 @@
       "sync_script": null,
       "sku_format": "unknown",
       "wc_sku_match": "name",
-      "products_in_wc": 81,
+      "products_in_wc": 98,
       "products_in_catalog": 39,
       "last_sync": null,
-      "notes": "Phone photos of jewelry (IMG_7098.PNG etc). Need supplier name, price list, stock."
+      "notes": "Selling prices already on WC (98 products). Need cost prices added to stock_sheet.xlsx"
     },
     {
       "id": "archies_cells",
@@ -175,10 +175,10 @@
       "sync_script": null,
       "sku_format": "unknown",
       "wc_sku_match": "name",
-      "products_in_wc": null,
+      "products_in_wc": 15,
       "products_in_catalog": 10,
       "last_sync": null,
-      "notes": "WhatsApp photos + Photoroom images. Appears to be bedding/homeware."
+      "notes": "Ironing board covers, peg bags, hot pot warmers. 15 products in WC. Fill cost prices in stock_sheet.xlsx"
     },
     {
       "id": "fitnastics",
