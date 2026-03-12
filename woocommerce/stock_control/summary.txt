@@ -1,0 +1,28 @@
+============================================================
+MASTER STOCK AUDIT
+============================================================
+  Total products:    2477
+  Published:         1444
+  Unpublished:       1033
+
+BY SUPPLIER:
+  unknown              1133 total   556 pub  (no price:326  no img:36  no desc:437)
+  makokoya              513 total   469 pub  (no price:415  no img:0  no desc:12)
+  hirschs               326 total   201 pub  (no price:31  no img:4  no desc:182)
+  impulse               277 total   131 pub  (no price:43  no img:0  no desc:61)
+  power_warehouse       100 total    55 pub  (no price:17  no img:5  no desc:25)
+  tupperware             65 total    27 pub  (no price:15  no img:0  no desc:44)
+  jewellery              63 total     5 pub  (no price:6  no img:0  no desc:41)
+
+DATA GAPS (published products):
+  Missing price:     512
+  Missing image:     45
+  Missing desc:      802
+  No supplier match: 1133
+
+OUTPUT FILES:
+  woocommerce/stock_control/master_stock.csv
+  woocommerce/stock_control/unmatched.csv
+  woocommerce/stock_control/price_alerts.csv
+  woocommerce/stock_control/missing_images.csv
+============================================================
