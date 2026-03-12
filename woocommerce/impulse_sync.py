@@ -404,6 +404,9 @@ def main():
     parser.add_argument("--out",      default=".",   help="Output directory")
     parser.add_argument("--markup",   type=float, default=40.0, help="Markup %% over cost (default 40)")
     parser.add_argument("--resume",   action="store_true", help="Skip pages already in impulse_extracted.json")
+    parser.add_argument("--wc-export", dest="wc_export", default="",
+                        help="WooCommerce product export CSV — used to skip products "
+                             "already in the store and to detect what fields are missing")
     args = parser.parse_args()
 
     os.makedirs(args.out, exist_ok=True)
@@ -472,17 +475,51 @@ def main():
 
     print(f"\nTotal unique products extracted: {len(all_products)}")
 
+    # ── Load WC export to avoid duplicates ──────────────────────────────────
+    wc_existing = {}  # sku -> wc row
+    if args.wc_export and Path(args.wc_export).exists():
+        print(f"\nLoading WC export to check for existing products...")
+        with open(args.wc_export, encoding="utf-8-sig") as f:
+            for row in csv.DictReader(f):
+                sku = row.get("SKU", "").strip().upper()
+                if sku:
+                    wc_existing[sku] = row
+        print(f"  {len(wc_existing)} products already in WC store")
+
+    def needs_update(wc_row):
+        """Return list of fields that are missing/empty in the existing WC product."""
+        missing = []
+        if not wc_row.get("Description", "").strip():
+            missing.append("description")
+        if not wc_row.get("Images", "").strip():
+            missing.append("image")
+        p = str(wc_row.get("Regular price", "")).strip()
+        if not p or p in ("0", "0.0"):
+            missing.append("price")
+        return missing
+
     # Generate SEO + find images + build WooCommerce rows
     print(f"\nGenerating SEO content and finding images...")
     wc_rows = []
     missing_images = []
+    skipped_complete = 0
 
     for i, product in enumerate(all_products, 1):
-        item_code  = (product.get("item_code") or "").strip()
+        item_code  = (product.get("item_code") or "").strip().upper()
         name       = product.get("name") or ""
         stock_row  = stock.get(item_code) if item_code else None
 
-        print(f"  [{i}/{len(all_products)}] {item_code or 'NO-CODE'} — {name[:50]}")
+        # Check if already in WC store
+        existing = wc_existing.get(item_code) if item_code else None
+        if existing:
+            missing = needs_update(existing)
+            if not missing:
+                skipped_complete += 1
+                print(f"  [{i}/{len(all_products)}] {item_code} — SKIP (already complete in WC)")
+                continue
+            print(f"  [{i}/{len(all_products)}] {item_code} — UPDATE {missing}  '{name[:40]}'")
+        else:
+            print(f"  [{i}/{len(all_products)}] {item_code or 'NO-CODE'} — NEW  '{name[:50]}'")
 
         # SEO generation
         seo_input = {**product}
@@ -491,19 +528,41 @@ def main():
             seo_input["retail_price_zar"]= retail_price(float(stock_row["price_ex_vat"]), args.markup)
             seo_input["stock_available"] = stock_row["stock_available"]
         seo_input["supplier"] = SUPPLIER
-        seo = generate_seo(seo_input, client)
 
-        # Image search
-        print(f"    Searching for image...")
-        img_url = find_product_image(name, item_code)
-        if img_url:
-            print(f"    Found: {img_url[:80]}...")
+        # For updates: only regenerate what's missing to save API costs
+        seo = {}
+        if existing:
+            missing = needs_update(existing)
+            if "description" in missing or "price" in missing:
+                seo = generate_seo(seo_input, client)
         else:
-            print(f"    No image found")
-            missing_images.append({"item_code": item_code, "name": name, "category": product.get("category", "")})
+            seo = generate_seo(seo_input, client)
 
-        wc_rows.append(build_wc_row(product, stock_row, seo, img_url, args.markup))
+        # Image search — only if missing
+        img_url = ""
+        if not existing or "image" in (needs_update(existing) if existing else []):
+            print(f"    Searching for image...")
+            img_url = find_product_image(name, item_code)
+            if img_url:
+                print(f"    Found: {img_url[:80]}...")
+            else:
+                print(f"    No image found")
+                missing_images.append({"item_code": item_code, "name": name, "category": product.get("category", "")})
+        else:
+            img_url = existing.get("Images", "")
+
+        # For updates: preserve existing WC ID so import updates rather than creates
+        wc_row = build_wc_row(product, stock_row, seo, img_url, args.markup)
+        if existing:
+            wc_row["ID"] = existing.get("ID", "")
+            # Preserve existing values where we're not updating
+            if "description" not in (needs_update(existing) if existing else []):
+                wc_row["Description"] = existing.get("Description", "")
+                wc_row["Short description"] = existing.get("Short description", "")
+        wc_rows.append(wc_row)
         time.sleep(0.5)
+
+    print(f"\n  Skipped {skipped_complete} products already complete in WC")
 
     # Write WooCommerce import CSV
     with open(wc_path, "w", newline="", encoding="utf-8") as f:
@@ -522,15 +581,19 @@ def main():
     unmatched = len(all_products) - matched
     priced    = sum(1 for r in wc_rows if r["Regular price"])
 
+    new_count    = sum(1 for r in wc_rows if not r.get("ID"))
+    update_count = sum(1 for r in wc_rows if r.get("ID"))
     print(f"""
 ============================================================
 DONE
 ============================================================
   Products extracted from pamphlet : {len(all_products)}
-  Matched to stock CSV (have price) : {matched}
-  No match in stock CSV             : {unmatched}
-  Products with images found        : {len(wc_rows) - len(missing_images)}
-  Products missing images           : {len(missing_images)}
+  Already complete in WC (skipped) : {skipped_complete}
+  Rows in import CSV               : {len(wc_rows)}
+    → New products to add          : {new_count}
+    → Existing products to update  : {update_count}
+  Products with images found       : {len(wc_rows) - len(missing_images)}
+  Products missing images          : {len(missing_images)}
 
 Output files:
   WooCommerce import  : {wc_path}
@@ -541,6 +604,7 @@ Next steps:
   1. Review {missing_path} — add images manually for these products
   2. Import {wc_path} into WooCommerce > Products > Import
      → Tick "Update existing products"
+     → Products with an ID will UPDATE; those without will be CREATED
 ============================================================
 """)
 
