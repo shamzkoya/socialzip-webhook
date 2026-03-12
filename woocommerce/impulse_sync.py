@@ -282,6 +282,7 @@ def find_product_image(name: str, item_code: str) -> str:
 
 # ── Claude API Calls ──────────────────────────────────────────────────────────
 def extract_products_from_page(image_path: str, client) -> list[dict]:
+    if os.getenv("NO_SEO"): return []
     b64, media_type = load_image_as_base64(image_path)
     for attempt in range(MAX_RETRIES):
         try:
@@ -312,6 +313,7 @@ def extract_products_from_page(image_path: str, client) -> list[dict]:
 
 
 def generate_seo(product: dict, client) -> dict:
+    if os.getenv("NO_SEO"): return {}
     prompt = SEO_PROMPT.format(product_json=json.dumps(product, indent=2))
     for attempt in range(MAX_RETRIES):
         try:
