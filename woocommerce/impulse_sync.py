@@ -424,11 +424,16 @@ def main():
     stock = load_stock_csv(args.stock)
     print(f"  {len(stock)} products in stock CSV")
 
-    # Convert PDF to images
-    print(f"\nConverting pamphlet PDF to images...")
+    # Convert PDF to images (skip if pages already exist and resuming)
     pages_dir = out_dir / "_pages"
-    image_paths = pdf_to_images(args.pamphlet, str(pages_dir))
-    print(f"  {len(image_paths)} pages")
+    existing_pages = sorted(pages_dir.glob("page_*.jpg")) if pages_dir.exists() else []
+    if args.resume and existing_pages:
+        image_paths = [str(p) for p in existing_pages]
+        print(f"\nUsing {len(image_paths)} existing page images (resume mode)")
+    else:
+        print(f"\nConverting pamphlet PDF to images...")
+        image_paths = pdf_to_images(args.pamphlet, str(pages_dir))
+        print(f"  {len(image_paths)} pages")
 
     # Load existing extractions if resuming
     all_extracted = []
