@@ -73,7 +73,7 @@ except ImportError:
     REQUESTS_AVAILABLE = False
 
 # ── Config ───────────────────────────────────────────────────────────────────
-CLAUDE_MODEL  = "claude-opus-4-6"
+CLAUDE_MODEL  = "claude-haiku-4-5-20251001"
 MAX_RETRIES   = 3
 RETRY_DELAY   = 6
 DEFAULT_MIN_MARGIN = 20.0   # % minimum margin
