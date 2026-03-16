@@ -52,10 +52,14 @@ except ImportError:
     print("ERROR: pip3 install anthropic"); sys.exit(1)
 
 try:
-    from duckduckgo_search import DDGS
+    from ddgs import DDGS
     DDG_AVAILABLE = True
 except ImportError:
-    DDG_AVAILABLE = False
+    try:
+        from duckduckgo_search import DDGS
+        DDG_AVAILABLE = True
+    except ImportError:
+        DDG_AVAILABLE = False
 
 try:
     import requests
