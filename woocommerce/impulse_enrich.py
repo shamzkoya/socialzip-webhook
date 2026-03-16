@@ -62,7 +62,7 @@ except ImportError:
 # ── Config ────────────────────────────────────────────────────────────────────
 DESC_MODEL     = "claude-haiku-4-5-20251001"
 DIM_MODEL      = "claude-haiku-4-5-20251001"
-DEFAULT_WORKERS = 8
+DEFAULT_WORKERS = 20
 PROGRESS_FILE  = "stock_control/impulse_enrich_progress.json"
 MAX_IMG_TRIES  = 4
 IMG_TIMEOUT    = 6
@@ -93,7 +93,7 @@ Rules:
 """
 
 # ── Description prompt ────────────────────────────────────────────────────────
-DESC_PROMPT = """Write WooCommerce product content for a South African hardware/homeware store.
+DESC_PROMPT = """Write WooCommerce product content AND estimate shipping dimensions for a South African hardware/homeware store.
 
 Product: {name}
 Brand: {brand}
@@ -105,8 +105,14 @@ Return ONLY a JSON object:
   "description": "2-3 sentence product description. Highlight key features, materials, and practical use. Mention size/capacity where relevant. South African context (mention 'load shedding' for torches/batteries/lanterns). NO fluff.",
   "short_description": "One punchy sentence (max 20 words) summarising the product.",
   "tags": "comma-separated list of 8-12 relevant search tags (lowercase, no #)",
-  "meta_description": "SEO meta description, max 155 chars, include key benefit and brand"
-}}"""
+  "meta_description": "SEO meta description, max 155 chars, include key benefit and brand",
+  "weight_kg": 0.5,
+  "length_cm": 30,
+  "width_cm": 10,
+  "height_cm": 5
+}}
+
+Dimension rules: be realistic for a physical retail product, weight includes packaging (+15%), use any size in the name (e.g. "2LT", "1.8M"), minimum weight 0.05 kg."""
 
 # ── Image search ──────────────────────────────────────────────────────────────
 HEADERS = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/122.0.0.0 Safari/537.36"}
@@ -167,24 +173,22 @@ def search_image(name: str, brand: str = "", sku: str = "") -> str:
 # ── Text enrichment ───────────────────────────────────────────────────────────
 
 def enrich_text(client, row: dict) -> dict:
-    """Call Claude Haiku to get description, tags, meta, and dimensions."""
+    """Call Claude Haiku ONCE to get description, tags, meta, and dimensions."""
     name  = row.get("Name", "")
     brand = row.get("Brands", "") or "Impulse"
     price = row.get("Regular price", "")
     cats  = row.get("Categories", "")
 
-    # Derive hint from categories
     hint = cats.split(">")[-1].strip() if ">" in cats else cats.split(",")[0].strip()
 
     updates = {}
-
-    # ── Descriptions + tags + meta ────────────────────────────────────────────
     prompt = DESC_PROMPT.format(name=name, brand=brand, hint=hint, price=price)
+
     for attempt in range(3):
         try:
             resp = client.messages.create(
                 model=DESC_MODEL,
-                max_tokens=512,
+                max_tokens=600,
                 messages=[{"role": "user", "content": prompt}]
             )
             raw = resp.content[0].text.strip()
@@ -195,6 +199,10 @@ def enrich_text(client, row: dict) -> dict:
             updates["Short description"] = data.get("short_description", "")
             updates["Tags"]              = data.get("tags", "")
             updates["Meta: _yoast_wpseo_metadesc"] = data.get("meta_description", "")[:155]
+            updates["Weight (kg)"]  = str(round(float(data.get("weight_kg",  0.5)), 3))
+            updates["Length (cm)"]  = str(round(float(data.get("length_cm", 20.0)), 1))
+            updates["Width (cm)"]   = str(round(float(data.get("width_cm",  10.0)), 1))
+            updates["Height (cm)"]  = str(round(float(data.get("height_cm",  5.0)), 1))
             break
         except Exception as e:
             if attempt == 2:
@@ -202,35 +210,12 @@ def enrich_text(client, row: dict) -> dict:
                 updates["Short description"] = f"{name} by {brand}."
                 updates["Tags"]              = hint.lower()
                 updates["Meta: _yoast_wpseo_metadesc"] = f"Buy {name} by {brand} at SocialZip."
-            else:
-                time.sleep(3 * (attempt + 1))
-
-    # ── Dimensions ────────────────────────────────────────────────────────────
-    dprompt = DIMENSION_PROMPT.format(name=name, hint=hint, brand=brand)
-    for attempt in range(3):
-        try:
-            resp = client.messages.create(
-                model=DIM_MODEL,
-                max_tokens=100,
-                messages=[{"role": "user", "content": dprompt}]
-            )
-            raw = resp.content[0].text.strip()
-            raw = re.sub(r"^```[a-z]*\n?", "", raw)
-            raw = re.sub(r"\n?```$", "", raw)
-            dims = json.loads(raw)
-            updates["Weight (kg)"]  = str(round(float(dims.get("weight_kg",  0.5)), 3))
-            updates["Length (cm)"]  = str(round(float(dims.get("length_cm", 20.0)), 1))
-            updates["Width (cm)"]   = str(round(float(dims.get("width_cm",  10.0)), 1))
-            updates["Height (cm)"]  = str(round(float(dims.get("height_cm",  5.0)), 1))
-            break
-        except Exception as e:
-            if attempt == 2:
                 updates["Weight (kg)"]  = "0.5"
                 updates["Length (cm)"]  = "20.0"
                 updates["Width (cm)"]   = "10.0"
                 updates["Height (cm)"]  = "5.0"
             else:
-                time.sleep(3 * (attempt + 1))
+                time.sleep(2 * (attempt + 1))
 
     return updates
 
