@@ -1,0 +1,9 @@
+supplier,sku,name,actions,price,has_desc,has_image
+impulse,F00273,Sad Iron Chrome,desc(claude),180.0,True,False
+impulse,F01989,Feather Duster Short,"qty=31(xlsx), desc(claude)",120.0,True,False
+impulse,F02072,C-Breaker Din Rail Black 10A,"qty=120(xlsx), desc(claude)",135.0,True,False
+hirschs,SMGBLENDBLK,Smeg Retro Jug Blender - Black,desc(claude),5300.0,True,False
+hirschs,9902044216519,Smeg Retro Jug Blender - Blue,desc(claude),5300.0,True,False
+hirschs,9902044216526,Smeg Retro Jug Blender - Mint,desc(claude),5300.0,True,False
+makokoya,9902054135039,Alco Roofing Screws 75mm,desc(claude),40.0,True,False
+makokoya,9902054135046,Alco Roofing Screws 90mm,desc(claude),60.0,True,False

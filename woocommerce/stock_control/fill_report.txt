@@ -1,0 +1,18 @@
+============================================================
+STOCK FILL REPORT
+============================================================
+  Total products updated : 8
+  Products unchanged     : 1
+
+BY SUPPLIER:
+  impulse             3 updated  (price:3  desc:3  img:0)
+  hirschs             3 updated  (price:3  desc:3  img:0)
+  makokoya            2 updated  (price:2  desc:2  img:0)
+
+NEXT STEPS:
+  1. Review wc_import_filled.csv
+  2. WooCommerce > Products > Import
+     → Upload wc_import_filled.csv
+     → Tick 'Update existing products'
+     → Map columns → Run Import
+============================================================
