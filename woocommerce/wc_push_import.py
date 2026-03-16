@@ -223,10 +223,20 @@ def row_to_payload(row, is_update=False):
     if dims:
         p["dimensions"] = dims
 
-    # Images
+    # Images — skip domains known to block hotlinking or that return errors
+    BLOCKED_DOMAINS = ("hirschs.co.za", "hirsch.co.za")
     img_str = row.get("Images", "").strip()
     if img_str:
-        p["images"] = [{"src": u.strip()} for u in img_str.split(",") if u.strip()]
+        valid_imgs = []
+        for u in img_str.split(","):
+            u = u.strip()
+            if not u:
+                continue
+            if any(d in u for d in BLOCKED_DOMAINS):
+                continue   # silently skip – CDN blocks external hotlinks
+            valid_imgs.append({"src": u})
+        if valid_imgs:
+            p["images"] = valid_imgs
 
     # Taxonomy (only set if values present, to avoid wiping on updates)
     cat_str = row.get("Categories", "").strip()
@@ -287,13 +297,39 @@ def send_batch(action, items, errors_out):
 
     data     = r.json()
     returned = data.get(action, [])
-    ok       = 0
-    for item in returned:
+    ok             = 0
+    img_fail_idxs  = []   # positions of image-failed items to retry without images
+    for i, item in enumerate(returned):
         if isinstance(item, dict) and item.get("id"):
             ok += 1
         elif isinstance(item, dict) and item.get("error"):
-            errors_out.append({"action": action, "error": item["error"],
-                               "sku": item.get("sku", "?"), "name": item.get("name", "?")})
+            err = item["error"]
+            if "image" in err.get("code", "").lower():
+                img_fail_idxs.append(i)   # retry without image
+            else:
+                errors_out.append({"action": action, "error": err,
+                                   "sku": item.get("sku", "?"), "name": item.get("name", "?")})
+
+    # Retry image-failed items without images
+    if img_fail_idxs:
+        retry_items = []
+        for i in img_fail_idxs:
+            p = dict(items[i])
+            p.pop("images", None)
+            retry_items.append(p)
+        print(f"    Retrying {len(retry_items)} image-failed items without images...")
+        r2 = api_post("products/batch", {action: retry_items})
+        if r2.ok:
+            for item in r2.json().get(action, []):
+                if isinstance(item, dict) and item.get("id"):
+                    ok += 1
+                elif isinstance(item, dict) and item.get("error"):
+                    errors_out.append({"action": action, "error": item["error"],
+                                       "sku": item.get("sku", "?"), "name": item.get("name", "?")})
+        else:
+            errors_out.append({"action": f"{action}_img_retry", "http": r2.status_code,
+                               "body": r2.text[:300]})
+
     return ok
 
 
