@@ -30,7 +30,7 @@ API       = f"{WC_URL}/wp-json/wc/v3"
 
 DELAY = 1.2
 
-CLOTHING_KEYWORDS  = ["clothing", "apparel", "fashion", "wear", "garment", "shirt", "dress", "pants", "jacket", "coat", "shoe", "boot"]
+CLOTHING_KEYWORDS  = ["fashion"]   # Only the 'Fashion' category — Padel Apparel is kept
 CHRISTMAS_KEYWORDS = ["christmas", "xmas", "festive", "holiday", "x-mas"]
 
 
