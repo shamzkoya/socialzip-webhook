@@ -303,9 +303,26 @@ def send_batch(action, items, errors_out):
         if isinstance(item, dict) and item.get("id"):
             ok += 1
         elif isinstance(item, dict) and item.get("error"):
-            err = item["error"]
-            if "image" in err.get("code", "").lower():
+            err  = item["error"]
+            code = err.get("code", "")
+            if "image" in code.lower():
                 img_fail_idxs.append(i)   # retry without image
+            elif code == "product_invalid_sku":
+                # Product already exists (from a previous in-flight request).
+                # Update it with our enriched payload to ensure correct data.
+                existing_id = err.get("data", {}).get("resource_id")
+                if existing_id:
+                    dup_p = dict(items[i])
+                    dup_p["id"] = existing_id
+                    dup_p.pop("images", None)   # skip images on update to avoid CDN issues
+                    ru = api_post("products/batch", {"update": [dup_p]})
+                    if ru.ok and ru.json().get("update", [{}])[0].get("id"):
+                        ok += 1   # count as success
+                    else:
+                        errors_out.append({"action": "sku_dup_update", "id": existing_id,
+                                           "sku": item.get("sku", "?")})
+                else:
+                    ok += 1   # already exists, counts as done
             else:
                 errors_out.append({"action": action, "error": err,
                                    "sku": item.get("sku", "?"), "name": item.get("name", "?")})
@@ -324,8 +341,12 @@ def send_batch(action, items, errors_out):
                 if isinstance(item, dict) and item.get("id"):
                     ok += 1
                 elif isinstance(item, dict) and item.get("error"):
-                    errors_out.append({"action": action, "error": item["error"],
-                                       "sku": item.get("sku", "?"), "name": item.get("name", "?")})
+                    err = item["error"]
+                    if err.get("code") == "product_invalid_sku":
+                        ok += 1   # already exists, count as done
+                    else:
+                        errors_out.append({"action": f"{action}_img_retry", "error": err,
+                                           "sku": item.get("sku", "?")})
         else:
             errors_out.append({"action": f"{action}_img_retry", "http": r2.status_code,
                                "body": r2.text[:300]})
