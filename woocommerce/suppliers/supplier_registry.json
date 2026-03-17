@@ -235,6 +235,26 @@
       "notes": "Empty folder. Need to establish what products and get stock sheet."
     }
   ],
+    {
+      "id": "pot_story",
+      "display_name": "The Pot Story",
+      "wc_brand_tag": "Pot Story",
+      "folder": "suppliers/pot_story",
+      "drive_folder_id": "1W8zV6DBwfJtOOfYk1fQLLI0fN77tUhbU",
+      "status": "active",
+      "data_quality": "structured",
+      "stock_file": "suppliers/pot_story/PRICE_LIST_JAN_2022_Nurseries.xls",
+      "catalog_file": "suppliers/pot_story/",
+      "sync_script": "suppliers/pot_story/pot_story_sync.py",
+      "sku_format": "Potstory product names",
+      "wc_sku_match": "name",
+      "products_in_wc": 60,
+      "products_in_catalog": 80,
+      "markup": "40%",
+      "last_sync": "2026-03-17",
+      "notes": "Fibrecite garden pots. Jan 2022 price list excl VAT. 40% markup applied. All dims from catalogue (mm→cm). Weights estimated. 13 newer products (Fern Vase, Meadow, Pinnacle etc.) not in 2022 price list – need updated price list from supplier."
+    }
+  ],
   "drive_root": "https://drive.google.com/drive/folders/1tmU_1ZM9BUgO5DVNBgMFHu0SaBxH-SfE",
   "wc_export_latest": "1PN0Zcx4B5gT376f3ha0KgIH68qrHg3TN",
   "total_wc_products": 6743,
