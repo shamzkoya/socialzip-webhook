@@ -111,6 +111,9 @@ def build_gallery_index(media_items):
         url  = m.get("source_url", "") or (m.get("guid") or {}).get("rendered", "")
         if not url:
             continue
+        # Ensure absolute URL (some WP installs return relative paths)
+        if url.startswith("/"):
+            url = WC_URL + url
         title = (m.get("title") or {}).get("rendered", "")
         slug  = m.get("slug", "")
         fname = url.rsplit("/", 1)[-1].rsplit(".", 1)[0]   # filename without ext/path
