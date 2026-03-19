@@ -105,9 +105,10 @@ def fetch_all_media():
 
 
 def build_gallery_index(media_items):
-    """Build searchable index: normalised_key → source_url."""
+    """Build searchable index: normalised_key → (media_id, source_url)."""
     index = {}
     for m in media_items:
+        media_id = m.get("id")
         url  = m.get("source_url", "") or (m.get("guid") or {}).get("rendered", "")
         if not url:
             continue
@@ -121,7 +122,7 @@ def build_gallery_index(media_items):
         for key in [title, slug, fname]:
             key = normalise(key)
             if key and len(key) > 3:
-                index.setdefault(key, url)   # first-wins per key
+                index.setdefault(key, (media_id, url))   # first-wins per key
 
     return index
 
@@ -142,44 +143,44 @@ def score_match(product_words, gallery_key):
 
 
 def find_gallery_image(product, gallery_index):
-    """Try to find best matching gallery image for a product."""
+    """Try to find best matching gallery image for a product.
+    Returns (media_id, url, method) or (None, None, None)."""
     name  = product.get("name", "")
     sku   = product.get("sku", "")
-    brand = ""
-    if product.get("brands"):
-        brand = product["brands"][0].get("name", "") if product["brands"] else ""
 
     # Try exact SKU match first
     sku_norm = normalise(sku)
     if sku_norm and sku_norm in gallery_index:
-        return gallery_index[sku_norm], "sku-exact"
+        mid, url = gallery_index[sku_norm]
+        return mid, url, "sku-exact"
 
     # Try SKU contained in gallery key
     if sku_norm and len(sku_norm) > 3:
-        for key, url in gallery_index.items():
+        for key, (mid, url) in gallery_index.items():
             if sku_norm in key:
-                return url, "sku-partial"
+                return mid, url, "sku-partial"
 
     # Word overlap matching on name
     name_norm  = normalise(name)
     name_words = [w for w in name_norm.split() if len(w) > 2]
     if not name_words:
-        return None, None
+        return None, None, None
 
     # Need at least 3 significant words to match (avoid false positives)
     min_words = min(3, len(name_words))
-    best_url, best_score = None, 0
+    best_mid, best_url, best_score = None, None, 0
 
-    for key, url in gallery_index.items():
+    for key, (mid, url) in gallery_index.items():
         s = score_match(name_words, key)
         if s > best_score:
             best_score = s
+            best_mid   = mid
             best_url   = url
 
     if best_score >= min_words:
-        return best_url, f"name-match({best_score})"
+        return best_mid, best_url, f"name-match({best_score})"
 
-    return None, None
+    return None, None, None
 
 
 def search_image_online(name, brand="", sku=""):
@@ -226,11 +227,15 @@ def search_image_online(name, brand="", sku=""):
     return ""
 
 
-def update_product_image(product_id, image_url, dry_run=False):
-    """Set image on a WooCommerce product."""
+def update_product_image(product_id, image_url, media_id=None, dry_run=False):
+    """Set image on a WooCommerce product.
+    Uses media_id (no sideload) when available, falls back to src URL."""
     if dry_run:
         return True
-    payload = {"images": [{"src": image_url}]}
+    if media_id:
+        payload = {"images": [{"id": media_id}]}
+    else:
+        payload = {"images": [{"src": image_url}]}
     r = requests.put(f"{WC_API}/products/{product_id}", auth=AUTH, json=payload, timeout=30)
     return r.status_code in (200, 201)
 
@@ -297,21 +302,22 @@ def process_product(p, gallery_index, no_web_search, dry_run):
 
     result = {"id": pid, "sku": sku, "name": name, "source": "", "image": "", "result": "no_image_found"}
 
-    # Step 1: gallery match
-    img_url, method = find_gallery_image(p, gallery_index)
+    # Step 1: gallery match — use media ID to avoid sideload failures
+    media_id, img_url, method = find_gallery_image(p, gallery_index)
 
     if img_url:
         result["source"] = f"gallery:{method}"
         result["image"]  = img_url
     elif not no_web_search:
         # Step 2: web search
+        media_id = None
         img_url = search_image_online(name, brand, sku)
         if img_url:
             result["source"] = "web-search"
             result["image"]  = img_url
 
     if img_url:
-        ok = update_product_image(pid, img_url, dry_run)
+        ok = update_product_image(pid, img_url, media_id=media_id, dry_run=dry_run)
         result["result"] = "updated" if ok else "api_error"
 
     return result

@@ -1,27 +1,49 @@
 id,sku,name,source,image,status
-33670,100Q7Q,Hisense 100Q7Q 100-inch QLED 4K Smart TV,gallery:name-match(4),/wp-content/uploads/2024/11/Hisense-MiniLED-QLED-TV-100-inch.png,api_error
-33658,,Smeg 90cm Cooker with Gas Hob - Premium Stainless Steel,gallery:name-match(7),/wp-content/uploads/2024/11/rgrx-8251-g540.0Smeg-90cm-Stainless-Steel-Cooker-With-Gas-Hob-1-2.jpg,api_error
-33669,QA85Q7FAALXXA,"Samsung QA85Q7FAALXXA 85"" 4K QLED AI TV",web-search,"https://m.media-amazon.com/images/S/aplus-media-library-service-media/c1c96e10-4045-4c64-92a2-e4197bc2249d.__CR0,0,3050,1250_PT0_SX1464_V1___.jpg",updated
-33659,86029,LG 14Pl Matte Black QuadWash Steam Dishwasher,web-search,https://www.hirschs.co.za/media/catalog/product/cache/5650c527889287cec4d241f33ee3fa4b/6/6/66095_f58ab6aa088a1f4d13f5d64a1991f02f.jpg,api_error
-33584,F03095,MoHAIR Paint Roller &amp; Tray Set,gallery:name-match(4),/wp-content/uploads/2026/03/2121-1055-standard-medium-pile-paint-roller-set-with-tray-0.jpg,api_error
-33672,85Q7Q,Hisense 85Q7Q 4K QLED 144Hz Smart TV,web-search,https://mcprod.jumbo.ae/media/catalog/product/q/7/q7q-85-rev02.jpg,updated
-33581,F02582,Microfibre High Density Paint Roller &amp; Tray Set,gallery:sku-partial,/wp-content/uploads/2024/05/f02582-Photoroom.jpg,api_error
-33578,F02904,Ruffer Pile Paint Roller &amp; Tray Set,gallery:name-match(5),/wp-content/uploads/2026/03/2121-1055-standard-medium-pile-paint-roller-set-with-tray-0.jpg,api_error
-33605,F00981,Ladder House Wife 4 Step,web-search,"https://m.media-amazon.com/images/S/aplus-media-library-service-media/0e7df572-011e-4d3a-8ab9-e0d818f370b8.__CR0,0,970,600_PT0_SX970_V1___.jpg",updated
-33561,F03094,Masking Paper Tape For Painting 5CM x 20M,web-search,https://m.media-amazon.com/images/I/31gh0yuhXEL._AC_.jpg,updated
-33630,F03568,Trimmer Line Assorted Colors 2 x 10M,web-search,https://www.gmr.com.fj/wp-content/uploads/2023/08/1014502-Green-scaled.jpg,api_error
-33525,F03106,"Paint Brush Wooden Lotus Handle Craftman 2"" - 50MM",gallery:name-match(4),/wp-content/uploads/2026/03/5-5-inch-wooden-handle-wall-paint-brush-1000x1000-1.jpg,api_error
-33548,F03142,"""Pro"" Roller Yellow Handle High Quality",web-search,https://m.media-amazon.com/images/I/71StrhHdqtL._AC_SL1500_.jpg,updated
-33549,F03141,"Textured ""Pro"" Roller Blue Handle Best Quality/Durability",web-search,https://m.media-amazon.com/images/I/51VE7aKV9LS.jpg,updated
-33558,F03145,Soft Pattern Designer Roller,web-search,https://m.media-amazon.com/images/I/71m3P71YvLL._AC_SL1500_.jpg,updated
-33444,55U7Q,"Hisense 55U7Q 55"" 4K Ultra HD Smart TV with Quantum Dot",web-search,https://m.media-amazon.com/images/I/71ywu++dSQL._SX679_.jpg,updated
-33492,55Q7Q,"Hisense 55Q7Q 55"" 4K QLED Smart TV",web-search,https://bf1af2.akinoncloudcdn.com/products/2025/08/28/611962/e2ca04a6-0d96-4e4b-a5bd-ff70f8dcb08d_size750_cropCenter.jpg,updated
-33447,65Q7Q,"Hisense 65Q7Q 65"" 4K Smart TV - Premium QLED Display",web-search,https://premiumoutlet.co.za/wp-content/uploads/65Q7Q-fifa-promo-scaled-1.jpg,updated
-33428,83958,Cloud Nine 152cm Spine-Flex ET Base Set,web-search,https://www.hirschs.co.za/media/catalog/product/cache/5650c527889287cec4d241f33ee3fa4b/c/n/cn_spine-flex_jpeg_3.jpg,api_error
-33432,85U8Q,"Hisense 85U8Q 85"" 4K Mini-LED Smart TV with Quantum Dot",web-search,https://atehno.md/files/items/85-led-smart-tv-hisense-85u8q-9857902492775.png,updated
-33433,75U8Q,"Hisense 75U8Q 75"" 4K Mini-LED Smart TV",web-search,https://cdn.tiramisuerp.com/s3.tehnoplus.me/1476325_5450630.jpg,updated
-33426,86697,DeLonghi PrimaDonna Aromatic Bean-to-Cup Coffee Machine,web-search,https://img.kavosdraugas.lt/284767a9-f708-4b8e-ac99-592357b6bde4/800x800/de63075tmupd8png.jpg,updated
-33419,H3319,Samsung 12000BTU R32 Inverter Air Conditioner,gallery:name-match(4),/wp-content/uploads/2026/03/Samsung-AR3000-Wall-Split-9000-Btu-Non-Inverter-Air-Conditioner-outdoor.jpg,api_error
-33429,116UX,Hisense 116UX RGB MiniLED TV - Premium 4K Smart Display,,,no_image_found
-33427,85339,Miele Guard L1 Bagged Cylinder Vacuum Cleaner,,,no_image_found
-33423,85454,Hisense 12kg Wash Block 2 in 1 Washer Dryer Combo,web-search,https://pictures-nigeria.jijistatic.net/187057595_MTYwMC0xMjAwLTJmZDdlOWEzZTg.webp,updated
+33422,,Smeg 90cm Cooker with Gas Hob - Premium Stainless Steel,gallery:name-match(7),https://happyharvesting.co.za/wp-content/uploads/2026/03/rgrx-8251-g540.0Smeg-90cm-Stainless-Steel-Cooker-With-Gas-Hob-1-2.jpg,updated
+20480,9983N20480,SAMSUNG 85” CU7000 CRYSTAL UHD 4K  SMART TV (2023),gallery:name-match(4),https://happyharvesting.co.za/wp-content/uploads/2024/05/SAMSUNG-50-CU7000-CRYSTAL-UHD-4K-1-Photoroom.jpg,updated
+32505,,Electric Induction Cooker,web-search,https://www.unifrost.com.my/wp-content/uploads/2025/03/Food-Processing-Equipment-Square-05-scaled.jpg,updated
+21566,ETFK721566,Test,web-search,https://www.cnuhv.com/uploadfile/202509/c951d78d359629f.jpg,updated
+21060,YOVP121034-1-1-1-1,SuperWash Instant Detailer (Gloss Enhancer),web-search,https://rapidoperformance.com/wp-content/uploads/2021/01/instant-detailer-504.jpg,updated
+18155,6954,"JVC 60"" 4K UHD SMART TV",gallery:sku-exact,https://happyharvesting.co.za/wp-content/uploads/2024/03/6954.jpeg,updated
+18154,6908,LG MINI CD HI FI SYSTEM (XBOM) CJ45DZAFLLK,gallery:sku-exact,https://happyharvesting.co.za/wp-content/uploads/2024/03/6908.webp,updated
+32283,,Container set (3 in 1) Apple Assorted colours,,,no_image_found
+18152,6890,SUPERSONIC H/THEATER 5.1,gallery:sku-exact,https://happyharvesting.co.za/wp-content/uploads/2024/03/6890.webp,updated
+18153,6891,"JVC 40"" HD SMART TV LT-40N550A",gallery:sku-exact,https://happyharvesting.co.za/wp-content/uploads/2024/03/6891.webp,updated
+18150,6810,"SKYWORTH 32"" ANDROID TV",gallery:sku-exact,https://happyharvesting.co.za/wp-content/uploads/2024/03/6810.webp,updated
+18148,6791,"SAMSUNG 55"" CRYSTAL UHD SMART TV (UA55CU7000KXXA)",gallery:sku-exact,https://happyharvesting.co.za/wp-content/uploads/2024/03/6791.webp,updated
+18147,6781,"JVC TROLLEY SPEAKER 10"" BT BATTERY SPKER XS-N518PB",gallery:sku-exact,https://happyharvesting.co.za/wp-content/uploads/2024/03/6781.webp,updated
+18146,6770,"SKYWORTH 40"" FHD READY 40STD2000",gallery:sku-exact,https://happyharvesting.co.za/wp-content/uploads/2024/03/6770.webp,updated
+18144,6741,"VILLAON 32"" LED TV",gallery:sku-exact,https://happyharvesting.co.za/wp-content/uploads/2024/03/6741.jpg,updated
+18145,6769,JVC CD PLAYER BLUETOOTH RV-NB22BT,gallery:sku-exact,https://happyharvesting.co.za/wp-content/uploads/2024/03/6769.webp,updated
+18142,6361,"JVC 42"" SMART TV",gallery:sku-exact,https://happyharvesting.co.za/wp-content/uploads/2024/03/6361.webp,updated
+18141,6319,CONDERE AMPLIFIER CH-7009,gallery:sku-exact,https://happyharvesting.co.za/wp-content/uploads/2024/03/6319.jpg,updated
+18138,5665,"ITEL 17"" LED TV",gallery:sku-exact,https://happyharvesting.co.za/wp-content/uploads/2024/03/5665.webp,updated
+18140,5967,"ITEL 19"" LED TV",gallery:sku-exact,https://happyharvesting.co.za/wp-content/uploads/2024/03/5967.webp,updated
+18137,5664,"ITEL 32"" ICAST TV S22",gallery:sku-exact,https://happyharvesting.co.za/wp-content/uploads/2024/03/5664.webp,updated
+18136,5498,"HISENSE 65"" UHD SMART TV",gallery:sku-exact,https://happyharvesting.co.za/wp-content/uploads/2024/03/5498.webp,updated
+18135,5380,"ITEL 43"" LED TV",gallery:sku-exact,https://happyharvesting.co.za/wp-content/uploads/2024/03/5380.webp,updated
+20657,HQRG320657,Custom Delivery,web-search,https://media.tychesoftwares.com/wp-content/uploads/how-to-setup-BOPIS-custom-delivery-settings.png,updated
+21048,YOVP121034-1,SuperWash Super Foam,web-search,https://www.chemsupplies.co.za/wp-content/uploads/2024/09/Superwashfoam.png,updated
+14677,p2vcdd,Cream Vinyl Pedestals,web-search,https://m.media-amazon.com/images/I/71ykFrBF2CL.jpg,updated
+9863,9902040163008,Teal Geometrical Vase,web-search,https://m.media-amazon.com/images/I/719QwFd-0BL._AC_SL1500_.jpg,updated
+14676,p2pyv2dr,2 Drawer Velvet Pedestals,,,no_image_found
+9861,9902040162988,Portrait Vase,web-search,https://alexbernsteinglass.com/wp-content/uploads/2024/11/SelfPortraitVase_9x5x5_1400.jpg,updated
+9860,9902040162971,Trio of Brown Cylindrical Vases,web-search,https://petalsandleaves.net/wp-content/uploads/2019/03/trio-of-cylinders.jpg,updated
+14674,p2ww2dr,2 Drawer Melamine Pedestals,web-search,https://www.huntsoffice.co.uk/imager/products/29394877/Steelcase-Implicit-Two-Drawer-Pedestal-On-Castors-Melamine-Front-Quarter-Angle_50ab3d46eadbd4af6b845e0994e3cada.jpg,updated
+9791,9902030407778,Viva Cortica 0.65l Glass Cork Storage,web-search,https://m.media-amazon.com/images/I/91KhPOqaKSL._AC_SL1500_.jpg,updated
+9858,9902040162957,Trio of Tricolor Vases,,,no_image_found
+9738,9902025099506,Cadac - Gas Cylinder 3 kg,web-search,https://campandclimb.co.za/wp-content/uploads/cadac-3kg-cylinder.png,updated
+9750,9902026634867,Falez Creamy Granitec Grill-Pan - 28 cm,,,no_image_found
+9737,9902025099544,Cadac - Gas Power Cooker,,,no_image_found
+9736,9902025099537,Cadac - Gas Cooker Eazi,,,no_image_found
+9735,9902025099513,Cadac - Gas Cylinder 5 kg,,,no_image_found
+9729,OmsCM3273,OMS - Cake Mould - Gold,,,no_image_found
+9600,9902031454689,Portable Electric Immersion Water Heating Rod Element,web-search,https://m.media-amazon.com/images/I/71KARueRssL._AC_.jpg,updated
+9607,9902022757843,Immersion Water Heater 1500W,web-search,https://m.media-amazon.com/images/I/71gRLnSUGKL._AC_SL1500_.jpg,updated
+9623,9902031454696,Electric Water Heating Element-black,,,no_image_found
+9555,9902025099605,Hart 7L Aluminium Stewpan,web-search,https://bankskitchenshop.co.za/media/catalog/product/cache/8c8e9c9af1e7c12edf5bef281b88133f/0/0/0048701_pot-with-lid-hart-j7-ssh-aluminium-7l-pack-of-8-776022.jpg,updated
+9553,9902025099582,Hart - J7 21 Litre Stew Pan,web-search,https://globalhouseware.co.za/wp-content/uploads/2019/04/Hart-21-Litre-Heavy-Quality-Stew-Pan.png,updated
+33427,85339,Miele Guard L1 Bagged Cylinder Vacuum Cleaner,web-search,https://media.miele.com/videoimages/80000128430.jpg,updated
+9416,9902025256725,Mellerware - 500ml 25W Zest Citrus Juicer - Black,web-search,https://metrohomecentre.com/wp-content/uploads/2019/01/Mellerware-Citrus-Juicer-Black-26205.jpg,api_error
+33429,116UX,Hisense 116UX RGB MiniLED TV - Premium 4K Smart Display,web-search,https://m.media-amazon.com/images/I/81Ejv33NuiL._AC_SL1500_.jpg,updated
+33428,83958,Cloud Nine 152cm Spine-Flex ET Base Set,,,no_image_found
