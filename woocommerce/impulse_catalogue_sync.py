@@ -220,30 +220,20 @@ def extract_page(client, doc, page_idx, total):
             time.sleep(4 * (attempt + 1))
 
 
-def calc_price(stock_row, product):
-    if stock_row:
-        sp = stock_row.get("Selling Price (R)")
-        if sp and str(sp).strip() not in ("", "None"):
-            try:
-                return round(float(str(sp).replace(",", ".")), 2)
-            except ValueError:
-                pass
-        cost = stock_row.get("Cost Price (ex VAT)")
-        if cost and str(cost).strip() not in ("", "None"):
-            try:
-                return round(float(str(cost).replace(",", ".")) * (1 + VAT_RATE) * MARKUP, 2)
-            except ValueError:
-                pass
-    wp = product.get("wholesale_price")
-    if wp:
-        try:
-            return round(float(wp) * MARKUP, 2)
-        except (ValueError, TypeError):
-            pass
+def calc_price(product):
+    """Price = catalogue retail price + VAT + markup.
+    Falls back to wholesale price if no retail price shown.
+    Stock sheet is NOT used for pricing."""
     rp = product.get("retail_price")
     if rp:
         try:
-            return round(float(rp), 2)
+            return round(float(rp) * (1 + VAT_RATE) * MARKUP, 2)
+        except (ValueError, TypeError):
+            pass
+    wp = product.get("wholesale_price")
+    if wp:
+        try:
+            return round(float(wp) * (1 + VAT_RATE) * MARKUP, 2)
         except (ValueError, TypeError):
             pass
     return None
@@ -384,7 +374,7 @@ def main():
             raw_sku = stock_row.get("Supplier SKU", "") or ""
         sku = raw_sku or f"IMP-{i:04d}"
 
-        price = calc_price(stock_row, product)
+        price = calc_price(product)
 
         qty = ""
         if stock_row:
