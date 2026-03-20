@@ -33,8 +33,8 @@ WC_SECRET = os.environ["WC_SECRET"]
 AUTH      = HTTPBasicAuth(WC_KEY, WC_SECRET)
 API       = f"{WC_URL}/wp-json/wc/v3"
 
-BATCH_SIZE = 25       # products per batch API call (conservative to avoid timeouts)
-DELAY      = 1.5      # seconds between batches
+BATCH_SIZE = 10       # products per batch API call (conservative to avoid timeouts)
+DELAY      = 2.0      # seconds between batches
 
 PROGRESS_FILE = SC / "import_progress.json"
 ERROR_FILE    = SC / "import_errors.json"
@@ -46,8 +46,16 @@ def api_get(endpoint, params=None):
     return r.json(), r.headers
 
 def api_post(endpoint, data):
-    r = requests.post(f"{API}/{endpoint}", auth=AUTH, json=data, timeout=90)
-    return r
+    for attempt in range(4):
+        try:
+            r = requests.post(f"{API}/{endpoint}", auth=AUTH, json=data, timeout=120)
+            return r
+        except requests.exceptions.ReadTimeout:
+            if attempt == 3:
+                raise
+            wait = 2 ** (attempt + 2)   # 4s, 8s, 16s
+            print(f"    ReadTimeout — retrying in {wait}s (attempt {attempt+1}/3)...")
+            time.sleep(wait)
 
 def fetch_all_pages(endpoint, params=None):
     items, page = [], 1
